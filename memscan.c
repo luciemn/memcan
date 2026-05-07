@@ -19,3 +19,30 @@ typedef struct MatchNode {
     int context_len;
     struct MatchNode *next;
 } MatchNode;
+
+static FILE *open_image(const char *filename) {
+    FILE *fp = fopen(filename, "rb");
+    if (!fp) {
+        perror(filename);
+        exit(EXIT_FAILURE);
+    }
+
+    if (fseek(fp, 0, SEEK_END) != 0) {
+        perror("fseek");
+        exit(EXIT_FAILURE);
+    }
+
+    long size = ftell(fp);
+    if (size < 0) {
+        perror("ftell");
+        exit(EXIT_FAILURE);
+    }
+
+    rewind(fp);
+
+    printf("[*] Image: '%s' size: %ld bytes", filename, size);
+    if (size == 1024 * 1024) printf(" (1 MB)");
+    printf("\n");
+
+    return fp;
+}
