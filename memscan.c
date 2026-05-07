@@ -59,3 +59,19 @@ static KeywordNode *keyword_push(KeywordNode *head, const char *word) {
     node->next = head;
     return node;
 }
+
+static void keyword_print(const KeywordNode *head) {
+    printf("Keywords loaded:\n");
+    for (const KeywordNode *node = head; node != NULL; node = node->next) {
+        printf("- %s\n", node->word);
+    }
+}
+
+static void keyword_free(KeywordNode *head) {
+    KeywordNode *node = head;
+    while (node) {
+        KeywordNode *next = node->next;
+        free(node);
+        node = next;
+    }
+}
