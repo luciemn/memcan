@@ -46,3 +46,16 @@ static FILE *open_image(const char *filename) {
 
     return fp;
 }
+
+static KeywordNode *keyword_push(KeywordNode *head, const char *word) {
+    KeywordNode *node = (KeywordNode *)malloc(sizeof(KeywordNode));
+    if (!node) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    strncpy(node->word, word, MAX_WORD - 1);
+    node->word[MAX_WORD - 1] = '\0';
+    node->next = head;
+    return node;
+}
