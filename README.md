@@ -8,6 +8,28 @@ Petit scanner forensic en C: lit une image disque binaire (`disk.img`), charge u
 - `disk.img`: image binaire à analyser (dump)
 - `wordlist.txt`: liste de mots-clés (1 par ligne, `#` = commentaire)
 
+## Commandes MSYS2 (MINGW64)
+
+```bash
+cd /d/ESGI/3eme_annee/trimestre_deux/c/examen/memcan
+gcc -Wall -Wextra -pedantic -std=c11 -g -o memscan memscan.c
+./memscan usb.img wordlist.txt
+```
+
+Avec `Makefile`:
+
+```bash
+cd /d/ESGI/3eme_annee/trimestre_deux/c/examen/memcan
+make
+make run
+```
+
+Si `gcc`/`make` manquent:
+
+```bash
+pacman -S --needed mingw-w64-x86_64-gcc make
+```
+
 ## Réponse aux questions
 
 ## Ex 1.2 — Read the image in chunks
