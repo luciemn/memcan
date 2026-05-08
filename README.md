@@ -13,7 +13,7 @@ Petit scanner forensic en C: lit une image disque binaire (`disk.img`), charge u
 ```bash
 cd /d/ESGI/3eme_annee/trimestre_deux/c/examen/memcan
 gcc -Wall -Wextra -pedantic -std=c11 -g -o memscan memscan.c
-./memscan usb.img wordlist.txt
+./memscan disk.img wordlist.txt
 ```
 
 Avec `Makefile`:
