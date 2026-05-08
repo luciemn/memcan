@@ -156,3 +156,26 @@ static void match_free(MatchNode *head) {
         node = next;
     }
 }
+
+static void print_context_sanitized(const char *s) {
+    for (size_t i = 0; s[i] != '\0'; i++) {
+        unsigned char c = (unsigned char)s[i];
+        if (isprint(c)) putchar(c);
+        else putchar('.');
+    }
+}
+
+static void match_print_report(const MatchNode *head) {
+    int idx = 1;
+    for (const MatchNode *m = head; m != NULL; m = m->next) {
+        printf("\n[MATCH #%d]\n", idx++);
+        printf("Keyword : \"%s\"\n", m->keyword);
+        printf("Offset  : 0x%08lX (%ld bytes from start)\n", m->offset, m->offset);
+        printf("Context : ...");
+        print_context_sanitized(m->context_before);
+        printf("[%s]", m->keyword);
+        print_context_sanitized(m->context_after);
+        printf("...\n");
+    }
+}
+
