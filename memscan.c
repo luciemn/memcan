@@ -219,3 +219,36 @@ static MatchNode *scan_image(FILE *fp, KeywordNode *keywords, int ctx_len) {
     free(buf);
     return matches;
 }
+
+
+
+int main(int argc, char **argv) {
+    if (argc < 3) {
+        fprintf(stderr, "Usage: %s <image_file> <wordlist> [--context N]\n", argv[0]);
+        return EXIT_FAILURE;
+    }
+
+    const char *image_file = argv[1];
+    const char *wordlist_file = argv[2];
+    int ctx_len = 16;
+
+    if (argc == 5 && strcmp(argv[3], "--context") == 0) {
+        ctx_len = atoi(argv[4]);
+        if (ctx_len < 0) ctx_len = 0;
+    }
+
+    KeywordNode *keywords = keyword_load(wordlist_file);
+    keyword_print(keywords);
+
+    FILE *fp = open_image(image_file);
+
+    MatchNode *matches = scan_image(fp, keywords, ctx_len);
+    fclose(fp);
+
+    match_print_report(matches);
+
+    keyword_free(keywords);
+    match_free(matches);
+
+    return EXIT_SUCCESS;
+}
