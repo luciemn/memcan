@@ -179,3 +179,43 @@ static void match_print_report(const MatchNode *head) {
     }
 }
 
+static MatchNode *scan_image(FILE *fp, KeywordNode *keywords, int ctx_len) {
+    unsigned char *buf = (unsigned char *)malloc(CHUNK_SIZE);
+    if (!buf) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    MatchNode *matches = NULL;
+    long file_pos = 0;
+
+    size_t bytes_read;
+    while ((bytes_read = fread(buf, 1, CHUNK_SIZE, fp)) > 0) {
+        printf("[*] Processing chunk at offset 0x%08lX (%zu bytes)\n", file_pos, bytes_read);
+
+        const unsigned char *end = buf + bytes_read;
+
+        for (const unsigned char *ptr = buf; ptr < end; ptr++) {
+            size_t remaining = (size_t)(end - ptr);
+
+            for (KeywordNode *kw = keywords; kw != NULL; kw = kw->next) {
+                size_t klen = strlen(kw->word);
+                if (klen == 0) continue;
+                if (remaining < klen) continue;
+
+                if (memcmp(ptr, kw->word, klen) == 0) {
+                    long offset = file_pos + (long)(ptr - buf);
+                    printf(" [+] Found \"%s\" at offset 0x%08lX\n", kw->word, offset);
+
+                    matches = match_push(matches, kw->word, offset,
+                                         buf, bytes_read, ptr, klen, ctx_len);
+                }
+            }
+        }
+
+        file_pos += (long)bytes_read;
+    }
+
+    free(buf);
+    return matches;
+}
